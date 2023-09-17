@@ -1,0 +1,110 @@
+model_type: 1
+model_name: GCNConvNet
+
+
+
+cuda_name: cuda:0
+
+work_dir: GCNConvNet
+batch_size: 
+  train: 256 
+  val: 256
+  test: 256 
+lr: 0.00005
+num_epoch: 300
+log_interval: 50
+seed: 171
+
+dataset_name: GDSCv2
+
+dataset_type: 
+  # - CTRPv1_AllData_mix_useChirality
+  # - CTRPv1_AllData_mix_useChirality
+  # - CTRPv1_AllData_mix_useChirality
+  - GDSCv2_train_mix_useChirality
+  - GDSCv2_val_mix_useChirality
+  - GDSCv2_test_mix_useChirality
+
+model:
+  
+  drug_module: 
+    module_name: 
+      - GCNConv
+      - GCNConv
+      - GCNConv
+
+    input_drug_feature_dim: 90
+    output_drug_feature_dim: 128
+    layer_num: 3
+
+    gnn_layers:  
+      - 
+        intput: 90
+        output: 90
+      - 
+        intput: 90
+        output: 180
+      - 
+        intput: 180
+        output: 360
+   
+    linear_layers:
+      - 
+        operate_name: linear
+        param:
+          - 360
+          - 1024
+      - 
+        operate_name: relu
+      - 
+        operate_name: dropout
+        param: 0.5
+      - 
+        operate_name: linear
+        param:
+          - 1024
+          - 128
+      - 
+        operate_name: dropout
+        param: 0.5
+      # - 
+      #   operate_name: linear
+      #   param:
+      #     - 1800
+      #     - 1500
+      # - 
+      #   operate_name: relu
+      # - 
+      #   operate_name: dropout
+      #   param: 0.2
+          
+    graph_pooling: max
+    dropout: 0.0
+
+  cell_module: 
+    module_name: Conv1d
+    input_cell_feature_dim: 735
+    output_cell_feature_dim: 128
+    fc_1_dim: 128
+    layer_num: 3
+    layer_hyperparameter:
+      kernel_size:
+        - 8
+        - 8
+        - 8
+      maxpool1d: 
+        - 3
+        - 3 
+        - 3
+      cnn_channels:
+        - 32
+        - 64
+        - 128
+
+
+  fusion_module:
+    fc_1_dim: 1024
+    fc_2_dim: 128
+    fc_3_dim: 1
+    dropout: 0.5
+    fusion_mode: concat

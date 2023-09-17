@@ -1,0 +1,62 @@
+model_type: 5
+model_name: GraTrans
+
+
+
+cuda_name: cuda:0
+
+work_dir: GraTransDRP_CTRPv1
+batch_size: 
+  train: 256 
+  val: 256
+  test: 256 
+lr: 0.00005
+num_epoch: 300
+log_interval: 50
+seed: 171
+
+dataset_name: CTRPv1
+
+dataset_type: 
+  - CTRPv1_train
+  - CTRPv1_val
+  - CTRPv1_test
+
+model:
+  
+  drug_module: 
+    input_drug_feature_dim: 90
+    input_drug_edge_dim: 5
+    use_drug_edge: False # False
+    fc_1_dim: 1500
+    fc_2_dim: 128
+    dropout: 0.5
+    transformer_dropout: 0.5
+
+  cell_module: 
+    module_name: Conv1d
+    input_cell_feature_dim: 735
+    fc_1_dim: 128
+    layer_num: 3
+    layer_hyperparameter:
+      kernel_size:
+        - 8
+        - 8
+        - 8
+      maxpool1d: 
+        - 3
+        - 3 
+        - 3
+      cnn_channels:
+        - 32
+        - 64
+        - 128
+
+
+  fusion_module:
+    fc_1_dim: 1024
+    fc_2_dim: 128
+    fc_3_dim: 1
+    dropout: 0.5
+    transformer_dropout: 0.5
+    fusion_mode: concat

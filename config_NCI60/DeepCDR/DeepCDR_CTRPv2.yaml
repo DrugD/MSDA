@@ -1,0 +1,145 @@
+model_type: 2
+model_name: DeepCDR
+
+cuda_name: cuda:0
+
+work_dir: DeepCDR_CTRPv2
+batch_size: 
+  train: 256 
+  val: 256
+  test: 256 
+lr: 0.00005
+num_epoch: 300
+log_interval: 50
+seed: 171
+
+dataset_name: CTRPv2
+
+dataset_type: 
+  - CTRPv2_train_mix_useChirality_withTTC
+  - CTRPv2_val_mix_useChirality_withTTC
+  - CTRPv2_test_mix_useChirality_withTTC
+  # - GDSCv2_train_mix_useChirality_withTTC
+  # - GDSCv2_val_mix_useChirality_withTTC
+  # - GDSCv2_test_mix_useChirality_withTTC
+
+model:
+  
+  drug_module: 
+    module_name: 
+      - GCNConv
+      - GCNConv
+      - GCNConv
+      - GCNConv
+    input_drug_feature_dim: 90
+    output_drug_feature_dim: 100
+    layer_num: 4
+
+    gnn_layers:  
+      - 
+        intput: 90
+        output: 256
+      - 
+        intput: 256
+        output: 256
+      - 
+        intput: 256
+        output: 256
+      - 
+        intput: 256
+        output: 100
+
+      # - 
+      #   operate_name: linear
+      #   param:
+      #     - 1800
+      #     - 1500
+      # - 
+      #   operate_name: relu
+      # - 
+      #   operate_name: dropout
+      #   param: 0.2
+          
+    graph_pooling: max
+    dropout: 0.1
+
+  cell_module: 
+    module_name: MLP
+    input_cell_feature_dim: 735
+    output_cell_feature_dim: 100
+
+    linear_layers:
+      - 
+        operate_name: linear
+        param:
+          - 735
+          - 256
+      - 
+        operate_name: relu
+      - 
+        operate_name: dropout
+        param: 0.1
+      - 
+        operate_name: linear
+        param:
+          - 256
+          - 100
+      - 
+        operate_name: relu
+
+
+
+  fusion_module:
+
+    module_name: MLP_Conv1D
+
+    linear_layers:
+      - 
+        operate_name: linear
+        param:
+          - 200
+          - 300
+      - 
+        operate_name: relu
+      -
+        operate_name: dropout
+        param: 0.1
+
+    cnn_layers:
+      -
+        operate_name: conv1d
+        kernel_size: 5
+        cnn_channels:
+          - 1
+          - 30
+      -
+        operate_name: maxpool1d
+        param: 2
+      -
+        operate_name: conv1d
+        kernel_size: 5
+        cnn_channels:
+          - 30
+          - 10
+      -
+        operate_name: maxpool1d
+        param: 3
+      -
+        operate_name: conv1d
+        kernel_size: 5
+        cnn_channels:
+          - 10
+          - 5
+      -
+        operate_name: maxpool1d
+        param: 3
+      -
+        operate_name: dropout
+        param: 0.1
+
+
+    fc_1:
+      - 70
+      - 1
+      
+    fusion_mode: concat

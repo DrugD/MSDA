@@ -1,0 +1,68 @@
+model_type: 7
+model_name: ODDTransE_RRF
+
+# 把cell lines 的 名称加在数据中，然后根据细胞系的名称分布来学习，细胞系的出现规则是在S，T中均出现，这一步需要在数据集构建时处理。
+
+cuda_name: cuda:1
+
+marker: exp_odd_transe_ODD7
+
+# AAAODD_TransEDRP_GDSCv2_5_s3_split_6_2_2_3for1_+2-1_multidrugAsOneDomain_K_5
+work_dir: K7_100epoch_wasserstein_top100_top80_remainRawFusion
+# K35_10epoch_wasserstein_top80_down20_remainRawFusion
+# _just1for1_pretrain_lock_twoBranch_K5twice_100epoch
+# work_dir: TransEDRP_NCI60_m2r_100
+batch_size: 
+  train: 256 
+  val: 256
+  test: 256 
+lr: 0.000001
+num_epoch: 100
+log_interval: 50
+seed: 171
+
+dataset_name: GDSCv2
+
+dataset_type: 
+  scale: 1
+  select_type: many_lh
+  # r3  three datasets are all random, and not mixed
+  # m2r train and val datasets are mixed, test dataset is random
+  # dataset_path: /home/lk/project/NCI60_dataset/normal_format
+  # dataset_path: /home/lk/project/NCI60_dataset/selected
+  dataset_path: /home/lk/Data/GDSC2_dataset/drug_classed
+  train: [1]
+  val: 0.2
+  test: "Cytarabine.pt"
+  K: 7
+    
+model:
+  
+  drug_module: 
+    input_drug_feature_dim: 90
+    input_drug_edge_dim: 5
+    use_drug_edge: True # False
+    fc_1_dim: 1500
+    fc_2_dim: 128
+    dropout: 0.5
+    transformer_dropout: 0.5
+
+  cell_module: 
+    module_name: Transformer
+    input_cell_feature_dim: 735
+    fc_1_dim: 128
+    layer_num: 3
+    layer_hyperparameter:
+      - 15
+      - 15
+      - 15
+    transformer_dropout: 0.5
+
+
+  fusion_module:
+    fc_1_dim: 1024
+    fc_2_dim: 128
+    fc_3_dim: 1
+    dropout: 0.5
+    transformer_dropout: 0.5
+    fusion_mode: concat

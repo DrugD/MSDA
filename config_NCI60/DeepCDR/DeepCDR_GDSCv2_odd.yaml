@@ -1,0 +1,154 @@
+model_type: 11
+model_name: ODDDeepCDR
+
+marker: exp_odd_deepcdr
+
+cuda_name: cuda:1
+
+work_dir: K35_10epoch_wasserstein_top80_down20
+# K35_100epoch_wasserstein_top_down
+# K35_100epoch_wasserstein_top80_down20
+batch_size: 
+  train: 256 
+  val: 256
+  test: 256 
+lr: 0.000001
+num_epoch: 10
+log_interval: 50
+seed: 171
+
+dataset_name: GDSCv2
+
+dataset_type: 
+  scale: 1
+  select_type: many_lh
+  # r3  three datasets are all random, and not mixed
+  # m2r train and val datasets are mixed, test dataset is random
+  # dataset_path: /home/lk/project/NCI60_dataset/normal_format
+  # dataset_path: /home/lk/project/NCI60_dataset/selected
+  dataset_path: /home/lk/Data/GDSC2_dataset/drug_classed
+  train: [1]
+  val: 0.2
+  test: "Cytarabine.pt"
+  K: 35
+
+model:
+  
+  drug_module: 
+    module_name: 
+      - GCNConv
+      - GCNConv
+      - GCNConv
+      - GCNConv
+    input_drug_feature_dim: 90
+    output_drug_feature_dim: 100
+    layer_num: 4
+
+    gnn_layers:  
+      - 
+        intput: 90
+        output: 256
+      - 
+        intput: 256
+        output: 256
+      - 
+        intput: 256
+        output: 256
+      - 
+        intput: 256
+        output: 100
+
+      # - 
+      #   operate_name: linear
+      #   param:
+      #     - 1800
+      #     - 1500
+      # - 
+      #   operate_name: relu
+      # - 
+      #   operate_name: dropout
+      #   param: 0.2
+          
+    graph_pooling: max
+    dropout: 0.1
+
+  cell_module: 
+    module_name: MLP
+    input_cell_feature_dim: 735
+    output_cell_feature_dim: 100
+
+    linear_layers:
+      - 
+        operate_name: linear
+        param:
+          - 735
+          - 256
+      - 
+        operate_name: relu
+      - 
+        operate_name: dropout
+        param: 0.1
+      - 
+        operate_name: linear
+        param:
+          - 256
+          - 100
+      - 
+        operate_name: relu
+
+
+
+  fusion_module:
+
+    module_name: MLP_Conv1D
+
+    linear_layers:
+      - 
+        operate_name: linear
+        param:
+          - 200
+          - 300
+      - 
+        operate_name: relu
+      -
+        operate_name: dropout
+        param: 0.1
+
+    cnn_layers:
+      -
+        operate_name: conv1d
+        kernel_size: 5
+        cnn_channels:
+          - 1
+          - 30
+      -
+        operate_name: maxpool1d
+        param: 2
+      -
+        operate_name: conv1d
+        kernel_size: 5
+        cnn_channels:
+          - 30
+          - 10
+      -
+        operate_name: maxpool1d
+        param: 3
+      -
+        operate_name: conv1d
+        kernel_size: 5
+        cnn_channels:
+          - 10
+          - 5
+      -
+        operate_name: maxpool1d
+        param: 3
+      -
+        operate_name: dropout
+        param: 0.1
+
+
+    fc_1:
+      - 70
+      - 1
+      
+    fusion_mode: concat

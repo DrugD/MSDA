@@ -1,0 +1,54 @@
+model_type: 6
+model_name: RelationGraph
+
+
+
+cuda_name: cuda:1
+
+work_dir: ATest_RelationGraph_GDSCv2_twoLayers
+batch_size: 
+  train: 256 
+  val: 256
+  test: 256 
+lr: 0.00005
+num_epoch: 300
+log_interval: 50
+seed: 171
+
+dataset_name: GDSCv2
+
+dataset_type: 
+  - GDSCv2_train_mix_useChirality
+  - GDSCv2_val_mix_useChirality
+  - GDSCv2_test_mix_useChirality
+
+model:
+  
+  drug_module: 
+    input_drug_feature_dim: 90
+    input_drug_edge_dim: 5
+    use_drug_edge: True # False
+    fc_1_dim: 1500
+    fc_2_dim: 128
+    dropout: 0.5
+    transformer_dropout: 0.5
+
+  cell_module: 
+    module_name: Transformer
+    input_cell_feature_dim: 735
+    fc_1_dim: 128
+    layer_num: 3
+    layer_hyperparameter:
+      - 15
+      - 15
+      - 15
+    transformer_dropout: 0.5
+
+
+  fusion_module:
+    fc_1_dim: 1024
+    fc_2_dim: 128
+    fc_3_dim: 1
+    dropout: 0.5
+    transformer_dropout: 0.5
+    fusion_mode: concat

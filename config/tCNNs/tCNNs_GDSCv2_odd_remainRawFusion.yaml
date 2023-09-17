@@ -1,0 +1,82 @@
+model_type: 1
+model_name: ODDtCNNs_RRF
+
+
+marker: exp_odd_tcnns_ODD
+# 后缀是 ‘remainRawFusion’ 用于控制是否增加remainRawFusion
+
+cuda_name: cuda:1
+
+work_dir: K15_100epoch_wasserstein_remainRawFusion
+# K35_10epoch_wasserstein_top80_down20_remainRawFusion
+batch_size: 
+  train: 256 
+  val: 256
+  test: 256 
+lr: 0.000001
+num_epoch: 100
+log_interval: 50
+seed: 171
+
+dataset_name: GDSCv2
+
+dataset_type: 
+  scale: 1
+  select_type: many_lh
+  # r3  three datasets are all random, and not mixed
+  # m2r train and val datasets are mixed, test dataset is random
+  # dataset_path: /home/lk/project/NCI60_dataset/normal_format
+  # dataset_path: /home/lk/project/NCI60_dataset/selected
+  dataset_path: /home/lk/Data/GDSC2_dataset/drug_classed
+  train: [1]
+  val: 0.2
+  test: "Cytarabine.pt"
+  K: 15
+    
+model:
+  
+  drug_module: 
+    module_name: Conv1d
+    input_drug_feature_channel: 32
+    input_drug_feature_dim: 228
+    layer_num: 3
+    layer_hyperparameter:
+      kernel_size:
+        - 7
+        - 7
+        - 7
+      maxpool1d: 
+        - 3
+        - 3 
+        - 3
+      cnn_channels:
+        - 40
+        - 80
+        - 60
+
+  cell_module: 
+    module_name: Conv1d
+    input_cell_feature_dim: 735
+    fc_1_dim: 128
+    layer_num: 3
+    layer_hyperparameter:
+      kernel_size:
+        - 7
+        - 7
+        - 7
+      maxpool1d: 
+        - 3
+        - 3 
+        - 3
+      cnn_channels:
+        - 40
+        - 80
+        - 60
+
+
+  fusion_module:
+    fc_1_dim: 1024
+    fc_2_dim: 1024
+    fc_3_dim: 1
+    dropout: 0.0
+    fusion_mode: concat

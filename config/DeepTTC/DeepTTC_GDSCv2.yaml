@@ -1,0 +1,127 @@
+model_type: 4
+model_name: DeepTTC
+
+cuda_name: cuda:0
+
+work_dir: DeepTTC
+batch_size: 
+  train: 256 
+  val: 256
+  test: 256 
+lr: 0.0002
+num_epoch: 300
+log_interval: 50
+seed: 171
+
+dataset_name: GDSCv2
+# dataset_name: CTRPv2
+dataset_type: 
+  # - CTRPv2_train_mix_useChirality
+  # - CTRPv2_val_mix_useChirality
+  # - CTRPv2_test_mix_useChirality
+  - GDSCv2_train_mix_useChirality_withTTC
+  - GDSCv2_val_mix_useChirality_withTTC
+  - GDSCv2_test_mix_useChirality_withTTC
+
+model:
+  
+  drug_module: 
+    module_name: 
+      - Transformer
+    input_drug_feature_dim: 2586
+    output_drug_feature_dim: 128
+    layer_num: 8
+
+    gnn_layers:  
+      embed_dim: 128
+      intermediate_dim: 512
+      output: 256
+      attention_probs_dropout: 0.1
+      hidden_dropout: 0.1
+      head: 8
+
+    graph_pooling: max
+    dropout: 0.1
+
+  cell_module: 
+    module_name: MLP
+    input_cell_feature_dim: 735
+    output_cell_feature_dim: 256
+
+    linear_layers:
+      - 
+        operate_name: linear
+        param:
+          - 735
+          - 1024
+      - 
+        operate_name: relu
+      - 
+        operate_name: linear
+        param:
+          - 1024
+          - 256
+      - 
+        operate_name: relu
+      - 
+        operate_name: linear
+        param:
+          - 256
+          - 64
+      - 
+        operate_name: relu
+      - 
+        operate_name: linear
+        param:
+          - 64
+          - 256
+      - 
+        operate_name: relu
+
+
+  fusion_module:
+
+    module_name: MLP
+
+    linear_layers:
+      - 
+        operate_name: linear
+        param:
+          - 384
+          - 1024
+      -
+        operate_name: dropout
+        param: 0.1
+      - 
+        operate_name: relu
+
+      - 
+        operate_name: linear
+        param:
+          - 1024
+          - 1024
+      -
+        operate_name: dropout
+        param: 0.1
+      - 
+        operate_name: relu
+
+      - 
+        operate_name: linear
+        param:
+          - 1024
+          - 512
+      -
+        operate_name: dropout
+        param: 0.1
+      - 
+        operate_name: relu
+
+      - 
+        operate_name: linear
+        param:
+          - 512
+          - 1
+
+
+    fusion_mode: concat

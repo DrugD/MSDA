@@ -1,0 +1,55 @@
+model_type: 0
+model_name: TransE
+
+
+
+cuda_name: cuda:0
+
+work_dir: ATEST_TransEDRP_CTRPv2_normal
+batch_size: 
+  train: 256 
+  val: 256
+  test: 256 
+lr: 0.00005
+num_epoch: 300
+log_interval: 50
+seed: 171
+
+dataset_name: CTRPv2
+
+dataset_type: 
+  - CTRPv2_train_normal
+  - CTRPv2_val_normal
+  - CTRPv2_test_normal
+
+
+model:
+  
+  drug_module: 
+    input_drug_feature_dim: 90
+    input_drug_edge_dim: 5
+    use_drug_edge: True # False
+    fc_1_dim: 1500
+    fc_2_dim: 128
+    dropout: 0.0
+    transformer_dropout: 0.5
+
+  cell_module: 
+    module_name: Transformer
+    input_cell_feature_dim: 735
+    fc_1_dim: 128
+    layer_num: 3
+    layer_hyperparameter:
+      - 5
+      - 5
+      - 5
+    transformer_dropout: 0.5
+
+
+  fusion_module:
+    fc_1_dim: 1024
+    fc_2_dim: 128
+    fc_3_dim: 1
+    dropout: 0.0
+    transformer_dropout: 0.5
+    fusion_mode: concat

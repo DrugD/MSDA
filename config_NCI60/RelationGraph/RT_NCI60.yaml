@@ -1,0 +1,60 @@
+model_type: 6
+model_name: RelationGraph
+
+
+
+cuda_name: cuda:0
+
+work_dir: RelationGraph_NCI60_m2r_100
+batch_size: 
+  train: 256 
+  val: 128
+  test: 128 
+lr: 0.00005
+num_epoch: 150
+log_interval: 200
+seed: 171
+
+dataset_name: NCI60
+
+dataset_type: 
+  scale: 1
+  select_type: m2r
+  # r3  three datasets are all random, and not mixed
+  # m2r train and val datasets are mixed, test dataset is random
+  dataset_path: /home/lk/project/NCI60_dataset/normal_format
+  train: 0.9
+  val: 0.1
+  test: 0.1
+
+
+model:
+  
+  drug_module: 
+    input_drug_feature_dim: 90
+    input_drug_edge_dim: 5
+    use_drug_edge: True # False
+    fc_1_dim: 1500
+    fc_2_dim: 128
+    dropout: 0.5
+    transformer_dropout: 0.5
+
+  cell_module: 
+    module_name: Transformer
+    input_cell_feature_dim: 735
+    fc_1_dim: 128
+    layer_num: 3
+    layer_hyperparameter:
+      - 5
+      - 5
+      - 5
+    transformer_dropout: 0.5
+
+
+  fusion_module:
+    fc_1_dim: 1024
+    fc_2_dim: 128
+    fc_3_dim: 1
+    dropout: 0.5
+    transformer_dropout: 0.5
+    fusion_mode: concat
