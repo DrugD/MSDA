@@ -4,17 +4,27 @@ Paper: "How to improve the out-of-domain generalization of drug response predict
 # How to Run?
 
 1.  CUDA & Pytorch & Main PIP
-torch                    1.10.1+cu113
-torch-cluster            1.6.0
-torch-geometric          2.2.0
-torch-scatter            2.0.9
-torch-sparse             0.6.13
-torch-spline-conv        1.2.1
-torch-tb-profiler        0.4.1
-rdkit                    2023.3.1
-nvidia-cudnn-cu11        8.5.0.96 
+   
+      torch                    1.10.1+cu113
+    
+      torch-cluster            1.6.0
+    
+      torch-geometric          2.2.0
+    
+      torch-scatter            2.0.9
+    
+      torch-sparse             0.6.13
+    
+      torch-spline-conv        1.2.1
+    
+      torch-tb-profiler        0.4.1
+    
+      rdkit                    2023.3.1
+    
+      nvidia-cudnn-cu11        8.5.0.96
+    
 
-2. Change your root path in mainODD.py and mainODD_NCI60.py
+3. Change your root path in mainODD.py and mainODD_NCI60.py
    
       　3 ROOTDIR = "YOURROOTPATH"
    
