@@ -1,5 +1,5 @@
 # MSDA
-Paper: "Zero-shot Learning for Preclinical Drug Screening"
+***This is the code for "Zero-shot Learning for Preclinical Drug Screening".***
 
 # How to Run?
 
@@ -23,17 +23,24 @@ Paper: "Zero-shot Learning for Preclinical Drug Screening"
     
       nvidia-cudnn-cu11        8.5.0.96
     
+2. Datasets
 
+   All datasets used in this paper are downloaded and the raw files are under `../root/data/` dir. The original dataset can be found here:
+
+- [GDSCv2](https://www.cancerrxgene.org/downloads/anova?screening_set=GDSC2)
+- [Cellminer](https://discover.nci.nih.gov/cellminer/loadDownload.do)
+  
 3. Change your root path in mainODD.py and mainODD_NCI60.py
    
-      　3 ROOTDIR = "YOURROOTPATH"
+      　 ROOTDIR = "YOURROOTPATH"
    
 4. Run mainODD.py for GDSCv2  
+      
+      　 python [../mainODD.py] --config [../config/xxx/xxx.yaml]
+   
+6. Run mainODD_NCI60.py for CellMiner 
 
-
-5. Run mainODD_NCI60.py for CellMiner 
-
-        python [../mainODD.py] --config [../config/DeepCDR/DeepCDR_GDSCv2_odd_remainRawFusion.yaml]
+        python [../mainODD_NCI60.py] --config [../config/DeepCDR/DeepCDR_GDSCv2_odd_remainRawFusion.yaml]
 
 # Overall 
 ![image](https://github.com/DrugD/MSDA/assets/37626451/b68f1977-63a3-487e-bc94-fb7002f08d6a)
