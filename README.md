@@ -1,5 +1,5 @@
 # MSDA
-Paper: "How to improve the out-of-domain generalization of drug response prediction models in drug discovery?"
+Paper: "Zero-shot Learning for Preclinical Drug Screening"
 
 # How to Run?
 
