@@ -1,5 +1,4 @@
-# MSDA
-***This is the code for "Zero-shot Learning for Preclinical Drug Screening".***
+The code for 'Zero-shot Learning for Preclinical Drug Screening', IJCAI 2024.
 
 # How to Run?
 
